@@ -1,0 +1,38 @@
+电路需要将每一步可以同时执行的门详细表示出来，并用 #Full depth i and Toffoli depth j 标记当前步数的深度
+每个门需要用下述这类代数表达式来描述；
+NOT门：    y1 = y1+1           
+CNOT门:    y2 = y2 + y1       
+Toffoli 门:  y3 = y3 + y1*y2  
+
+下面是一个标准格式的示例，需要实现的函数为 
+f1 = x1*x2 + x3 + x4
+f2 = x1*x2*x3*x4 + x1*x2*x4 + x1 + x2*x3*x4 + x2*x4 + x2 + x5
+f3 = x1*x2*x3*x4 + x1*x2*x4 + x2*x3*x4 + x2*x4 + x4 + x5
+f4 = x1*x2*x3*x4 + x1*x2*x4 + x2*x3*x4 + x2*x4 + x5
+f5 = x1*x2 + x2 + x3 + x4  
+这里我们利用了两个辅助比特, 并且最后列出了如何进行换位操作：
+
+# Initialization
+y1 = x1;  y2= x2;  y3 = x3;  y4 = x4; y5 = x5; y6 = 0; y7 = 0;
+
+
+#Full depth 1 and Toffoli depth 0
+y1 = y1+y2;  y3 = y3+y4;
+
+#Full depth 2 and Toffoli depth 1
+y6 = y6+y1*y3;  y7 = y7+y2*y4;
+
+#Full depth 3 and Toffoli depth 2
+y5 = y5+y6*y7;
+
+#Full depth 4 and Toffoli depth 3
+y6 = y6+y1*y3;  y7 = y7+y2*y4;
+
+#Full depth 5 and Toffoli depth 4
+y3 = y3+y1*y2;  y4 = y4+y5;
+
+#Full depth 6 and Toffoli depth 4
+y2 = y2+y3;  y1 = y1+y5;
+
+#Reordering
+z1 = y2; z2 = y1; z3 = y4; z4 = y5; z5 = y3;
